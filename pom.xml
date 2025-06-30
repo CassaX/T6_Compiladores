@@ -28,7 +28,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>br.ufscar.dc.compiladores.jander.Principal</mainClass>
+                            <mainClass>compiladores.t6.T6</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -58,6 +58,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>24</maven.compiler.release>
-        <exec.mainClass>java.compiladores.t6.T6</exec.mainClass>
+        <exec.mainClass>compiladores.t6.T6</exec.mainClass>
     </properties>
 </project>
