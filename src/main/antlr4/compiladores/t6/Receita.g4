@@ -1,112 +1,56 @@
 grammar Receita;
-// --- Tokens (Lexer Rules) ---
-INICIO_RECEITA : 'Início';
-FIM_RECEITA    : 'Fim';
-REPETIR        : 'Repita';
-MODO_PREPARO   : 'Modo de Preparo';
 
-FORNO          : 'Forno';
-BATEDEIRA      : 'Batedeira';
-LIQUIDIFICADOR : 'Liquidificador';
-GELADEIRA      : 'Geladeira';
-PANELA         : 'Panela';
+// --- Tokens ---
+TITULO_RECEITA   : 'Receita';
+TAG_FIM          : 'Fim';
 
 ACAO_ADICIONAR : 'Adicione';
 ACAO_MISTURAR  : 'Misture';
 ACAO_CORTAR    : 'Corte';
-ACAO_BATER     : 'Bata';
-ACAO_PENEIRAR  : 'Peneire';
 ACAO_ASSAR     : 'Asse';
+ACAO_BATER     : 'Bata';
 ACAO_COZINHAR  : 'Cozinhe';
-ACAO_QUEBRAR   : 'Quebre';
-ACAO_VERIFICAR : 'Verifique';
+ACAO_RESERVAR  : 'Reserve';
 
-A              : 'A';
-ATE            : 'ATE';
-DE             : 'de';
-EM             : 'em';   // NOVO TOKEN para "em"
-NA             : 'na';   // NOVO TOKEN para "na"
-NO             : 'no';   // NOVO TOKEN para "no"
+EM             : 'em' | 'no' | 'na';
+POR            : 'por';
+A              : 'a';
 
 VIRGULA        : ',';
-DOIS_PONTOS    : ':';
 PONTO_E_VIRGULA: ';';
-ABRE_PARENTESES: '(';
-FECHA_PARENTESES: ')';
 
-NUMERO         : [0-9]+;
-MEDIDA         : 'ml' | 'g' | 'kg' | 'litro' | 'xicaras' | 'colher de sopa' | 'colheres' | 'pitadas' | 'unidades';
-TEMPO_UNIDADE  : 'minutos' | 'horas';
-TEMP_UNIDADE   : 'graus' | 'C';
+NUMERO         : [0-9]+ ('.' [0-9]+)?;
+MEDIDA         : 'ml' | 'g' | 'kg' | 'litros' | 'xicaras' | 'xicara' | 'colher' | 'colheres' | 'pitada' | 'unidades' | 'unidade';
+UNIDADE_TEMPO  : 'minutos' | 'horas' | 'segundos';
+UNIDADE_TEMP   : 'graus';
 
-IDENTIFICADOR  : [a-zA-ZçÇãõéÉóÓàÀÜÜ_][a-zA-ZçÇãõéÉóÓàÀÜÜ0-9_]*;
-TEXTO_LITERAL  : '"' (~["\r\n])* '"';
+IDENTIFICADOR  : [a-zA-ZçÇãõáéíóúÁÉÍÓÚâêôÂÊÔàÀ_][a-zA-Z0-9çÇãõáéíóúÁÉÍÓÚâêôÂÊÔàÀ_]*;
+TEXTO_LITERAL  : '"' (~["\r\n])*? '"';
 
 WS             : [ \t\r\n]+ -> skip;
 COMENTARIO_LINHA : '//' ~[\r\n]* -> skip;
 
-// --- Regras de Parser (Parser Rules) ---
-receita : INICIO_RECEITA nome_receita DOIS_PONTOS
-          secao_modo_preparo
-          FIM_RECEITA PONTO_E_VIRGULA
-        ;
+// --- Regras de Parser ---
+receita: cabecalho passo+ TAG_FIM;
+cabecalho: TITULO_RECEITA TEXTO_LITERAL PONTO_E_VIRGULA;
+passo: acao PONTO_E_VIRGULA;
 
-nome_receita : TEXTO_LITERAL | IDENTIFICADOR;
+acao:
+    acao_adicionar | acao_misturar | acao_assar | acao_bater |
+    acao_cozinhar | acao_cortar | acao_reservar | acao_generica;
 
-secao_modo_preparo : (MODO_PREPARO DOIS_PONTOS)? lista_passos;
+// Regras de ação ajustadas para usar TEXTO_LITERAL para recipientes/dispositivos
+acao_adicionar: ACAO_ADICIONAR item_declaracao (VIRGULA item_declaracao)* (EM TEXTO_LITERAL)?;
+acao_misturar:  ACAO_MISTURAR (lista_itens_uso)? (EM TEXTO_LITERAL)?;
+acao_bater:     ACAO_BATER (lista_itens_uso)? (EM TEXTO_LITERAL)? (POR tempo)?;
+acao_cozinhar:  ACAO_COZINHAR (lista_itens_uso)? (EM TEXTO_LITERAL)? (POR tempo)?;
+acao_assar:     ACAO_ASSAR (EM TEXTO_LITERAL)? (POR tempo)? (A temperatura)?;
+acao_cortar:    ACAO_CORTAR item_declaracao (EM TEXTO_LITERAL)?;
+acao_reservar:  ACAO_RESERVAR (TEXTO_LITERAL | IDENTIFICADOR);
+acao_generica:  ACAO_MISTURAR | ACAO_BATER;
+item_declaracao: (NUMERO MEDIDA 'de' | NUMERO)? TEXTO_LITERAL;
 
-lista_passos : passo+;
-
-passo : acao PONTO_E_VIRGULA
-      | REPETIR NUMERO TEXTO_LITERAL PONTO_E_VIRGULA
-      ;
-
-// Regra 'acao' agora inclui as novas ações personalizadas
-acao : acao_simples
-      | acao_com_dispositivo
-      | acao_com_ingredientes_geral // Substitui a antiga acao_com_ingredientes
-      | acao_com_ate
-      | acao_misturar_ate_condicao
-      | acao_cortar // Nova ação específica para Corte
-      | acao_misturar_destino // Nova ação para Misture com destino
-      ;
-
-// Regra que define as preposições de destino (A, na, no)
-destino_recipiente : A | NA | NO; // NOVO
-
-// acao_com_ingredientes_geral agora não inclui ACAO_CORTAR
-acao_com_ingredientes_geral : (ACAO_ADICIONAR | ACAO_QUEBRAR | ACAO_PENEIRAR) lista_itens_com_quantidade (destino_recipiente IDENTIFICADOR)?; // MODIFICADO
-
-lista_itens_com_quantidade : item_com_quantidade (VIRGULA item_com_quantidade)*;
-
-item_com_quantidade : NUMERO MEDIDA DE? TEXTO_LITERAL
-                    | NUMERO IDENTIFICADOR
-                    | TEXTO_LITERAL
-                    | IDENTIFICADOR
-                    ;
-
-// acao_simples agora permite um descritivo opcional (para "Misture suavemente")
-acao_simples : ACAO_MISTURAR (IDENTIFICADOR | TEXTO_LITERAL)? ; // MODIFICADO
-
-acao_com_dispositivo : (ACAO_ASSAR | ACAO_BATER | ACAO_COZINHAR) no_dispositivo;
-
-no_dispositivo : FORNO
-                | BATEDEIRA
-                | LIQUIDIFICADOR
-                | GELADEIRA
-                | PANELA
-                ;
-
-acao_misturar_ate_condicao : ACAO_MISTURAR (IDENTIFICADOR | TEXTO_LITERAL)? ATE TEXTO_LITERAL;
-
-acao_com_ate : ACAO_VERIFICAR TEXTO_LITERAL ATE (tempo | TEXTO_LITERAL);
-
-tempo : NUMERO TEMPO_UNIDADE;
-
-// --- Novas regras adicionadas para a entrada específica ---
-
-// Nova regra para a ação de 'Corte' com 'em'
-acao_cortar : ACAO_CORTAR TEXTO_LITERAL (EM TEXTO_LITERAL)? (A IDENTIFICADOR)?; // NOVO
-
-// Nova regra para 'Misture na Massa' (ou similar)
-acao_misturar_destino : ACAO_MISTURAR destino_recipiente IDENTIFICADOR; // NOVOE;
+// --- Elementos Reutilizáveis ---
+lista_itens_uso: (TEXTO_LITERAL | IDENTIFICADOR) (VIRGULA (TEXTO_LITERAL | IDENTIFICADOR))*;
+tempo:           NUMERO UNIDADE_TEMPO;
+temperatura:     NUMERO UNIDADE_TEMP;

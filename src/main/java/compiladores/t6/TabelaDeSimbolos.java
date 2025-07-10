@@ -1,57 +1,55 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package compiladores.t6;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+// Importa a classe IngredienteInfo do outro arquivo
+import compiladores.t6.UtilitariosSemanticos.IngredienteInfo;
 
-import compiladores.t6.UtilitariosSemanticos;
-
+/**
+ * Gerencia os símbolos da receita (ingredientes e utensílios).
+ * Mantém o estado da receita conforme ela é analisada.
+ */
 public class TabelaDeSimbolos {
+    private final Map<String, IngredienteInfo> ingredientes = new HashMap<>();
+    private final Set<String> utensilios = new HashSet<>();
 
-    private Map<String, UtilitariosSemanticos.IngredienteInfo> ingredientes = new HashMap<>();
-    private Set<String> utensilios = new HashSet<>();
-
-    public TabelaDeSimbolos() {
-        utensilios.add("tigela");
-        utensilios.add("panela");
-        utensilios.add("forma");
-        utensilios.add("copo");
-        utensilios.add("prato");
-        utensilios.add("massa");
-    }
-
-    public boolean adicionarOuAtualizarIngrediente(String nome, double quantidade, String unidade) {
+    /**
+     * Adiciona um novo ingrediente ou atualiza a quantidade de um existente.
+     * @param nome O nome do ingrediente (ex: "Farinha de Trigo").
+     * @param quantidade A quantidade a ser adicionada.
+     * @param unidade A unidade de medida.
+     */
+    public void adicionarIngrediente(String nome, double quantidade, String unidade) {
         String nomeNormalizado = nome.toLowerCase();
         if (ingredientes.containsKey(nomeNormalizado)) {
-            UtilitariosSemanticos.IngredienteInfo infoExistente = ingredientes.get(nomeNormalizado);
-            infoExistente.addQuantidade(quantidade, unidade);
-            return true;
+            ingredientes.get(nomeNormalizado).addQuantidade(quantidade, unidade);
         } else {
-            ingredientes.put(nomeNormalizado, new UtilitariosSemanticos.IngredienteInfo(quantidade, unidade));
-            return true;
+            // Usa a classe IngredienteInfo importada
+            ingredientes.put(nomeNormalizado, new IngredienteInfo(nome, quantidade, unidade));
         }
     }
 
-    public Map<String, UtilitariosSemanticos.IngredienteInfo> getIngredientes() {
+    /**
+     * Verifica se um ingrediente já foi declarado na tabela.
+     * @param nome O nome do ingrediente.
+     * @return true se o ingrediente existe, false caso contrário.
+     */
+    public boolean ingredienteExiste(String nome) {
+        return ingredientes.containsKey(nome.toLowerCase());
+    }
+
+    /**
+     * Adiciona um utensílio (panela, tigela, Forno, etc.) ao conjunto de utensílios.
+     * @param nome O nome do utensílio.
+     */
+    public void adicionarUtensilio(String nome) {
+        utensilios.add(nome);
+    }
+
+    public Map<String, IngredienteInfo> getIngredientes() {
         return ingredientes;
-    }
-
-    public void adicionarUtensilio(String nomeUtensilio) {
-        utensilios.add(nomeUtensilio.toLowerCase());
-    }
-
-    public boolean isUtensilioConhecido(String nomeUtensilio) {
-        return utensilios.contains(nomeUtensilio.toLowerCase()) ||
-               nomeUtensilio.equalsIgnoreCase("Forno") ||
-               nomeUtensilio.equalsIgnoreCase("Batedeira") ||
-               nomeUtensilio.equalsIgnoreCase("Liquidificador") ||
-               nomeUtensilio.equalsIgnoreCase("Geladeira") ||
-               nomeUtensilio.equalsIgnoreCase("Panela");
     }
 
     public Set<String> getUtensilios() {

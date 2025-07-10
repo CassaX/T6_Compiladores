@@ -1,123 +1,119 @@
 package compiladores.t6;
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
+import org.antlr.v4.runtime.Token;
 import java.util.Map;
 import java.util.Set;
 
 public class AnalisadorSemantico extends ReceitaBaseVisitor<Void> {
 
-    private TabelaDeSimbolos tabelaDeSimbolos = new TabelaDeSimbolos();
+    private final TabelaDeSimbolos tabela;
     private int errorCount = 0;
 
-    public Map<String, UtilitariosSemanticos.IngredienteInfo> getIngredientesDeclarados() {
-        return tabelaDeSimbolos.getIngredientes();
+    public AnalisadorSemantico() {
+        this.tabela = new TabelaDeSimbolos();
     }
 
-    public Set<String> getUtensiliosNecessarios() {
-        return tabelaDeSimbolos.getUtensilios();
-    }
+    public Map<String, UtilitariosSemanticos.IngredienteInfo> getIngredientes() { return tabela.getIngredientes(); }
+    public Set<String> getUtensilios() { return tabela.getUtensilios(); }
+    public int getErrorCount() { return errorCount; }
 
-    public int getErrorCount() {
-        return errorCount;
-    }
-
-    private void addError(String message, org.antlr.v4.runtime.Token token) {
+    private void addError(String message, Token token) {
         System.err.println("Erro Semântico na linha " + token.getLine() + ":" + token.getCharPositionInLine() + " - " + message);
         errorCount++;
     }
 
     @Override
-    public Void visitItem_com_quantidade(ReceitaParser.Item_com_quantidadeContext ctx) {
-        String nomeIngrediente = null;
-        double quantidade = 0.0;
-        String unidade = "";
-
-        if (ctx.NUMERO() != null) {
-            quantidade = Double.parseDouble(ctx.NUMERO().getText());
-            if (ctx.MEDIDA() != null) {
-                unidade = ctx.MEDIDA().getText();
-            } else if (ctx.IDENTIFICADOR() != null && ctx.IDENTIFICADOR().getText().equalsIgnoreCase("unidades")) {
-                unidade = "unidades";
-            }
+    public Void visitAcao_adicionar(ReceitaParser.Acao_adicionarContext ctx) {
+        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente, pois a regra 'recipiente' não existe mais.
+        if (ctx.EM() != null) {
+            tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         }
 
-        if (ctx.TEXTO_LITERAL() != null) {
-            nomeIngrediente = ctx.TEXTO_LITERAL().getText().replace("\"", "");
-        } else if (ctx.IDENTIFICADOR() != null) {
-            nomeIngrediente = ctx.IDENTIFICADOR().getText();
-        }
+        for (ReceitaParser.Item_declaracaoContext item : ctx.item_declaracao()) {
+            String nome = item.TEXTO_LITERAL().getText().replace("\"", "");
+            double quantidade = 1.0;
+            String unidade = "unidade";
 
-        if (nomeIngrediente != null && !nomeIngrediente.isEmpty()) {
-            if (quantidade == 0.0 && unidade.isEmpty()) {
-                quantidade = 1.0;
-                unidade = "unidade";
+            if (item.NUMERO() != null) {
+                quantidade = Double.parseDouble(item.NUMERO().getText());
             }
-            tabelaDeSimbolos.adicionarOuAtualizarIngrediente(nomeIngrediente, quantidade, unidade);
+            if (item.MEDIDA() != null) {
+                unidade = item.MEDIDA().getText();
+            }
+            tabela.adicionarIngrediente(nome, quantidade, unidade);
+        }
+        return null;
+    }
+
+    private void validarUsoDeIngredientes(ReceitaParser.Lista_itens_usoContext lista) {
+        if (lista == null) return;
+        for (var item : lista.TEXTO_LITERAL()) {
+            String nomeIngrediente = item.getText().replace("\"", "");
+            if (!tabela.ingredienteExiste(nomeIngrediente)) {
+                addError("Tentativa de usar o ingrediente '" + nomeIngrediente + "' antes de ser adicionado.", item.getSymbol());
+            }
+        }
+    }
+
+    @Override
+    public Void visitAcao_misturar(ReceitaParser.Acao_misturarContext ctx) {
+        validarUsoDeIngredientes(ctx.lista_itens_uso());
+        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente.
+        if (ctx.EM() != null) {
+            tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitAcao_bater(ReceitaParser.Acao_baterContext ctx) {
+        validarUsoDeIngredientes(ctx.lista_itens_uso());
+        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente.
+        if (ctx.EM() != null) {
+            tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitAcao_cozinhar(ReceitaParser.Acao_cozinharContext ctx) {
+        validarUsoDeIngredientes(ctx.lista_itens_uso());
+        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente.
+        if (ctx.EM() != null) {
+            tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitAcao_cortar(ReceitaParser.Acao_cortarContext ctx) {
+        ReceitaParser.Item_declaracaoContext itemCtx = ctx.item_declaracao();
+        String nomeIngrediente = itemCtx.TEXTO_LITERAL().getText().replace("\"", "");
+
+        if (!tabela.ingredienteExiste(nomeIngrediente)) {
+            addError("Tentativa de cortar o ingrediente '" + nomeIngrediente + "' antes de ser adicionado.", itemCtx.TEXTO_LITERAL().getSymbol());
+        }
+        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente.
+        if (ctx.EM() != null) {
+            tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitAcao_assar(ReceitaParser.Acao_assarContext ctx) {
+        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente.
+        if (ctx.EM() != null) {
+            tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         } else {
-             addError("Nome de ingrediente inválido ou faltando.", ctx.getStart());
+            tabela.adicionarUtensilio("Forno");
         }
-
-        return super.visitItem_com_quantidade(ctx);
+        return null;
     }
 
     @Override
-    public Void visitNo_dispositivo(ReceitaParser.No_dispositivoContext ctx) {
-        tabelaDeSimbolos.adicionarUtensilio(ctx.getText());
-        return super.visitNo_dispositivo(ctx);
-    }
-
-    @Override
-    public Void visitAcao_com_ingredientes(ReceitaParser.Acao_com_ingredientesContext ctx) {
-        if (ctx.IDENTIFICADOR() != null) {
-            String recipiente = ctx.IDENTIFICADOR().getText();
-            tabelaDeSimbolos.adicionarUtensilio(recipiente);
-
-            if (!tabelaDeSimbolos.isUtensilioConhecido(recipiente)) {
-                 addError("Recipiente '" + recipiente + "' não reconhecido como um utensílio válido.", ctx.IDENTIFICADOR().getSymbol());
-            }
-        }
-        return super.visitAcao_com_ingredientes(ctx);
-    }
-
-    @Override
-    public Void visitAcao_com_dispositivo(ReceitaParser.Acao_com_dispositivoContext ctx) {
-        String acao = ctx.getChild(0).getText();
-        String dispositivo = ctx.no_dispositivo().getText();
-
-        tabelaDeSimbolos.adicionarUtensilio(dispositivo);
-
-        switch (acao) {
-            case "Asse":
-                if (!dispositivo.equalsIgnoreCase("Forno")) {
-                    addError("Ação 'Asse' só pode ser usada com 'Forno'. Encontrado: " + dispositivo, ctx.getStart());
-                }
-                break;
-            case "Bata":
-                if (!dispositivo.equalsIgnoreCase("Batedeira") && !dispositivo.equalsIgnoreCase("Liquidificador")) {
-                    addError("Ação 'Bata' só pode ser usada com 'Batedeira' ou 'Liquidificador'. Encontrado: " + dispositivo, ctx.getStart());
-                }
-                break;
-            case "Cozinhe":
-                if (!dispositivo.equalsIgnoreCase("Panela")) {
-                    addError("Ação 'Cozinhe' só pode ser usada com 'Panela'. Encontrado: " + dispositivo, ctx.getStart());
-                }
-                break;
-        }
-        return super.visitAcao_com_dispositivo(ctx);
-    }
-
-    @Override
-    public Void visitPasso(ReceitaParser.PassoContext ctx) {
-        if (ctx.REPETIR() != null) {
-            int numeroRepeticoes = Integer.parseInt(ctx.NUMERO().getText());
-            if (numeroRepeticoes <= 0) {
-                addError("O número de repetições em 'Repita' deve ser um inteiro positivo.", ctx.NUMERO().getSymbol());
-            }
-        }
-        return super.visitPasso(ctx);
+    public Void visitAcao_reservar(ReceitaParser.Acao_reservarContext ctx) {
+        tabela.adicionarUtensilio(ctx.getChild(1).getText().replace("\"", ""));
+        return null;
     }
 }
