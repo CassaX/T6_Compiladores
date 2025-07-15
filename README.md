@@ -6,18 +6,18 @@
 
 ### Autor:
 
-Matheus dos Santos Sousa - 812051
+Guilherme dos Santos Wisniewski
 
-Matheus Henrique Cassatti - 771050
+Matheus dos Santos Sousa
+
+Matheus Henrique Cassatti
 
 ## INTRODUÇÃO
-
 ---
 
 O trabalho desenvolvido a seguir para a matéria de Compiladores visa a criação de uma linguagem de programação e um compilador para a mesma. A linguagem criada é utilizada para a escrita de receitas de cozinha. O compilador, então, interpreta o programa dado em formato `.txt` e o processa através de análise léxica, sintática e semântica, gerando uma página HTML formatada com a receita.
 
 ## GRAMÁTICA
-
 ---
 
 A gramática da linguagem RECIPE está definida no arquivo `Receita.g4`.
