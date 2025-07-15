@@ -13,12 +13,10 @@ Matheus dos Santos Sousa
 Matheus Henrique Cassatti
 
 ## INTRODUÇÃO
----
 
 O trabalho desenvolvido a seguir para a matéria de Compiladores visa a criação de uma linguagem de programação e um compilador para a mesma. A linguagem criada é utilizada para a escrita de receitas de cozinha. O compilador, então, interpreta o programa dado em formato `.txt` e o processa através de análise léxica, sintática e semântica, gerando uma página HTML formatada com a receita.
 
 ## GRAMÁTICA
----
 
 A gramática da linguagem RECIPE está definida no arquivo `Receita.g4`.
 
@@ -52,7 +50,6 @@ Na seção de passos, pode-se utilizar comandos da linguagem para se escrever a 
 
 ## COMPILAR
 
----
 
 Para executar o programa, abra terminal no diretório raiz do projeto e use o comando:
 
