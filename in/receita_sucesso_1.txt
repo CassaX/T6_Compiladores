@@ -1,11 +1,11 @@
-Receita "Bolo de Fubá Definitivo";
+Receita "Bolo de Fubá";
 
 Adicione 3 "ovos", 2 xicaras de "açúcar", 1 xicara de "leite" em "tigela";
-Adicione 1 unidade de "Goiabada";
 Bata na "Batedeira" por 5 minutos;
 Adicione 2 xicaras de "fubá", 1 xicara de "farinha de trigo";
 Adicione "fermento em pó";
 Misture;
+Adicione 1 unidade de "Goiabada";
 Corte "Goiabada" em "cubinhos";
 Asse no "Forno" por 40 minutos a 180 graus;
 Fim;

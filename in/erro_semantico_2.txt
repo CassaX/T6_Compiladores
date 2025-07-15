@@ -1,0 +1,6 @@
+Receita "Sopa Cremosa";
+
+Corte "Batata" em "cubos"; // Erro semântico: "Batata" não adicionada
+Adicione 2 "cenouras", 1 "Batata" em "panela";
+Cozinhe;
+Fim;

@@ -48,7 +48,6 @@ public class UtilitariosSemanticos {
                 unidadePrincipal = unidadePrincipal.substring(0, unidadePrincipal.length() - 1);
             }
 
-            // Tratamento para não adicionar 'de' para 'unidade'
             if (unidadePrincipal.equalsIgnoreCase("unidade")) {
                 return quantidadeStr + " " + nome;
             }

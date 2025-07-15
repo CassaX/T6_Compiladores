@@ -1,0 +1,5 @@
+Receita "Sopa de Legumes";
+
+Adicione 500 g de "legumes picados";
+Cozinhe em "panela" por 1.2.3 minutos;
+Fim;

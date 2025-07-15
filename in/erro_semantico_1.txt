@@ -1,0 +1,7 @@
+Receita "Café com Leite";
+
+Misture "Açúcar" em "xicara"; // Erro semântico: "Açúcar" não adicionado
+Adicione 1 xicara de "leite", 1 colher de "café";
+Adicione 2 colheres de "Açúcar";
+Misture "leite", "café", "Açúcar" em "xicara";
+Fim;

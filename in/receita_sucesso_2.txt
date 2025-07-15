@@ -1,0 +1,8 @@
+Receita "Omelete Simples";
+
+Adicione 2 "ovos" em "tigela";
+Adicione 1 pitada de "sal", 1 pitada de "pimenta do reino";
+Misture "ovos", "sal", "pimenta do reino" na "tigela";
+Cozinhe em "frigideira" por 3 minutos;
+Reserve "Omelete";
+Fim;

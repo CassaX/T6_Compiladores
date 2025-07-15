@@ -1,8 +1,9 @@
 package compiladores.t6;
 
-import org.antlr.v4.runtime.Token;
 import java.util.Map;
 import java.util.Set;
+
+import org.antlr.v4.runtime.Token;
 
 public class AnalisadorSemantico extends ReceitaBaseVisitor<Void> {
 
@@ -24,7 +25,6 @@ public class AnalisadorSemantico extends ReceitaBaseVisitor<Void> {
 
     @Override
     public Void visitAcao_adicionar(ReceitaParser.Acao_adicionarContext ctx) {
-        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente, pois a regra 'recipiente' não existe mais.
         if (ctx.EM() != null) {
             tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         }
@@ -58,7 +58,6 @@ public class AnalisadorSemantico extends ReceitaBaseVisitor<Void> {
     @Override
     public Void visitAcao_misturar(ReceitaParser.Acao_misturarContext ctx) {
         validarUsoDeIngredientes(ctx.lista_itens_uso());
-        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente.
         if (ctx.EM() != null) {
             tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         }
@@ -68,7 +67,6 @@ public class AnalisadorSemantico extends ReceitaBaseVisitor<Void> {
     @Override
     public Void visitAcao_bater(ReceitaParser.Acao_baterContext ctx) {
         validarUsoDeIngredientes(ctx.lista_itens_uso());
-        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente.
         if (ctx.EM() != null) {
             tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         }
@@ -78,7 +76,6 @@ public class AnalisadorSemantico extends ReceitaBaseVisitor<Void> {
     @Override
     public Void visitAcao_cozinhar(ReceitaParser.Acao_cozinharContext ctx) {
         validarUsoDeIngredientes(ctx.lista_itens_uso());
-        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente.
         if (ctx.EM() != null) {
             tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         }
@@ -93,16 +90,11 @@ public class AnalisadorSemantico extends ReceitaBaseVisitor<Void> {
         if (!tabela.ingredienteExiste(nomeIngrediente)) {
             addError("Tentativa de cortar o ingrediente '" + nomeIngrediente + "' antes de ser adicionado.", itemCtx.TEXTO_LITERAL().getSymbol());
         }
-        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente.
-        if (ctx.EM() != null) {
-            tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
-        }
         return null;
     }
 
     @Override
     public Void visitAcao_assar(ReceitaParser.Acao_assarContext ctx) {
-        // MUDANÇA: Acessamos o TEXTO_LITERAL diretamente.
         if (ctx.EM() != null) {
             tabela.adicionarUtensilio(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         } else {
@@ -113,7 +105,6 @@ public class AnalisadorSemantico extends ReceitaBaseVisitor<Void> {
 
     @Override
     public Void visitAcao_reservar(ReceitaParser.Acao_reservarContext ctx) {
-        tabela.adicionarUtensilio(ctx.getChild(1).getText().replace("\"", ""));
         return null;
     }
 }

@@ -1,0 +1,6 @@
+Receita "Suco de Laranja";
+
+Adicione 3 "laranjas";
+Adicione 10 de "açúcar";
+Misture;
+Fim;

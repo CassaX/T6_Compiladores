@@ -1,10 +1,11 @@
 package compiladores.t6;
 
-import org.antlr.v4.runtime.tree.ParseTree;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.stream.Collectors;
+
+import org.antlr.v4.runtime.tree.ParseTree;
 
 public class GeradorHtml extends ReceitaBaseVisitor<Void> {
 
@@ -64,7 +65,6 @@ public class GeradorHtml extends ReceitaBaseVisitor<Void> {
         if (ctx.MEDIDA() != null) {
             sb.append(ctx.MEDIDA().getText()).append(" de ");
         }
-        // MUDANÇA: Remove as aspas do texto do ingrediente
         sb.append(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         return sb.toString();
     }
@@ -80,7 +80,6 @@ public class GeradorHtml extends ReceitaBaseVisitor<Void> {
         sb.append(itens);
 
         if (ctx.EM() != null) {
-            // MUDANÇA: Remove as aspas do texto do recipiente
             sb.append(" em ").append(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         }
         sb.append(".");
@@ -96,7 +95,6 @@ public class GeradorHtml extends ReceitaBaseVisitor<Void> {
             sb.append(" ").append(ctx.lista_itens_uso().getText().replace("\"", ""));
         }
         if (ctx.EM() != null) {
-            // MUDANÇA: Remove as aspas do texto do recipiente
             sb.append(" em ").append(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         }
         sb.append(".");
@@ -111,7 +109,6 @@ public class GeradorHtml extends ReceitaBaseVisitor<Void> {
         sb.append(capitalize(ctx.ACAO_CORTAR().getText())).append(" ").append(ingredienteParte);
 
         if (ctx.EM() != null) {
-            // MUDANÇA: Remove as aspas do texto do formato (ex: "cubinhos")
             sb.append(" ").append(ctx.EM().getText()).append(" ").append(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         }
         sb.append(".");
@@ -124,7 +121,6 @@ public class GeradorHtml extends ReceitaBaseVisitor<Void> {
         StringBuilder sb = new StringBuilder();
         sb.append(capitalize(ctx.ACAO_ASSAR().getText()));
         if (ctx.EM() != null) {
-            // MUDANÇA: Remove as aspas do texto do dispositivo (ex: "Forno")
             sb.append(" no ").append(ctx.TEXTO_LITERAL().getText().replace("\"", ""));
         }
         if (ctx.tempo() != null) {
@@ -140,7 +136,6 @@ public class GeradorHtml extends ReceitaBaseVisitor<Void> {
 
     @Override
     public Void visitAcao_reservar(ReceitaParser.Acao_reservarContext ctx) {
-        // MUDANÇA: Remove as aspas se o item reservado for um texto literal
         String item = ctx.getChild(1).getText().replace("\"", "");
         modoPreparoHtml.append("<li>").append(capitalize(ctx.ACAO_RESERVAR().getText())).append(" ").append(item).append(".</li>\n");
         return null;
