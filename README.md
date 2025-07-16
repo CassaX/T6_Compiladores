@@ -56,3 +56,7 @@ Após fazer o build do projeto, para executar o programa, abra terminal no diret
 `java -jar target/T6-1.0-jar-with-dependencies.jar in/<arquivo_receita.txt> out/<arquivo_saida.html>`
 
 Exemplo: `java -jar target/T6-1.0-jar-with-dependencies.jar in/receita.txt out/bolo.html`
+
+## APRESENTAÇÂO
+
+Link para o vídeo de apresentação: [Clique aqui](https://drive.google.com/file/d/1Yy5KTRi8Em5KSvJuWqk7Rs1Zu5Bfe40R/view?usp=sharing)
