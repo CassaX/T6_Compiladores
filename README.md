@@ -51,8 +51,8 @@ Na seção de passos, pode-se utilizar comandos da linguagem para se escrever a 
 ## COMPILAR
 
 
-Para executar o programa, abra terminal no diretório raiz do projeto e use o comando:
+Após fazer o build do projeto, para executar o programa, abra terminal no diretório raiz do projeto e use o comando:
 
-`java -jar /target/T6-1.0-jar-with-dependencies.jar in/<arquivo_receita.txt> out/<arquivo_saida.html>`
+`java -jar target/T6-1.0-jar-with-dependencies.jar in/<arquivo_receita.txt> out/<arquivo_saida.html>`
 
-Exemplo: `java -jar /target/T6-1.0-jar-with-dependencies.jar receita.txt bolo.html`
+Exemplo: `java -jar target/T6-1.0-jar-with-dependencies.jar in/receita.txt out/bolo.html`
