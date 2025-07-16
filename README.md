@@ -4,7 +4,7 @@
 
 ### Universidade Federal de São Carlos - Prof. Daniel Lucrédio
 
-### Autor:
+### Autores:
 
 Guilherme dos Santos Wisniewski
 
@@ -18,9 +18,9 @@ O trabalho desenvolvido a seguir para a matéria de Compiladores visa a criaçã
 
 ## GRAMÁTICA
 
-A gramática da linguagem RECIPE está definida no arquivo `Receita.g4`.
+A gramática da nossa linguagem está definida no arquivo `Receita.g4`.
 
-O seguinte exemplo ilustra o uso da linguagem RECIPE:
+O seguinte exemplo ilustra o uso da linguagem:
 
 ```java
 Receita "Bolo de Fubá";
