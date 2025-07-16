@@ -14,7 +14,7 @@ Matheus Henrique Cassatti
 
 ## INTRODUÇÃO
 
-O trabalho desenvolvido a seguir para a matéria de Compiladores visa a criação de uma linguagem de programação e um compilador para a mesma. A linguagem criada é utilizada para a escrita de receitas de cozinha. O compilador, então, interpreta o programa dado em formato `.txt` e o processa através de análise léxica, sintática e semântica, gerando uma página HTML formatada com a receita.
+O trabalho desenvolvido a seguir para a matéria de Compiladores visa a criação de uma linguagem de programação e um compilador para a mesma. A linguagem criada é utilizada para a escrita de receitas de cozinha. O compilador, então, interpreta o programa dado em formato `.txt` e o processa através de análise léxica, sintática e semântica, gerando uma página HTML formatada com a receita. O objetivo principal é fazer o usuário se preocupar apenas em declarar o modo de preparo e o compilador fica encarregado de identificar os ingredientes e utensílios, e depois declará-los no HTML juntamente com o próprio modo de preparo.
 
 ## GRAMÁTICA
 
